@@ -9,10 +9,8 @@ module.exports = (bot) => {
         databaseURL: process.env.DB_URL
       });
 
-    let guildCount = bot.guilds.cache.size;
+    console.log("Simple Bot is online!");
 
-    console.log(`[Connection] Bot is now active for ${guildCount} guilds.`);
-
-    bot.user.setActivity(".help",{type: "PLAYING"});
+    bot.user.setActivity(".",{type: "PLAYING"});
 
 }
