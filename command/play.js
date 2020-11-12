@@ -1,34 +1,50 @@
 const ytdl = require('ytdl-core');
+const YouTube = require('simple-youtube-api');
 const Music = require('./../class/Music');
 const Song = require('./../class/Song');
 let FieldValue = require('firebase-admin').firestore.FieldValue;
 
 module.exports.run = async (bot, message, db, args) => {
 
-    /* Check to see if the user included a link with the command.
-        if le length is not equal to 1 that means we sont have a link
-        so we can send a message and stop executing the code.
-    */
-    if(args.length != 1){
-        message.channel.send("Please include the youtube url to the song!");
+    const youtube = new YouTube(process.env.YT_API);
+
+    // no link or title
+    if(!args){
+        message.channel.send("Please include the youtube url or title of the song!");
         return;
     }
 
-    // Save the link from the args
-    const link = args[0];
+    
+    const userLink = args[0];
+    let url;
+    let title;
+    let hasUrl = true;
+
+    // join the title into a string
+    if (args.length > 1){
+        title = args.join(' ');
+        hasUrl = false;
+    }
+    // no url, lets find it
+    if(!hasUrl){
+        let search = await youtube.searchVideos(title, 1);
+        url = await search[0].url;
+    // if we have a url lets make sure its valid
+    }else if (!ytdl.validateURL(userLink)) {
+        console.log("Not a valid link");
+        return;
+    // we have a valid url
+    }else{
+        url = userLink;
+    }
 
     // Make sure the user is in a voice channel
     if (message.member.voice.channel){
 
-        // Make sure the link is a valid youtube video
-        if (!ytdl.validateURL(link)){
-            message.channel.send("Url is not valid!");
-            return;
-        }
         // join the voice channel and dispatch the song
         const connection = await message.member.voice.channel.join();
-        const details = await ytdl.getBasicInfo(link);
-        const dispatcher = connection.play(ytdl(link, {filter: 'audioonly'}), {volume: 0.2});
+        const details = await ytdl.getBasicInfo(url);
+        const dispatcher = connection.play(ytdl(url, {filter: 'audioonly'}), {volume: 0.2});
 
         dispatcher.on('finish', () => {
             console.log('done playing');
