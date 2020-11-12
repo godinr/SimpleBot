@@ -21,7 +21,7 @@ module.exports.run = async (bot, message, db, args) => {
     let hasUrl = true;
 
     // join the title into a string
-    if (args.length > 1){
+    if (!args[0].startsWith("http")){
         title = args.join(' ');
         hasUrl = false;
     }
@@ -43,7 +43,7 @@ module.exports.run = async (bot, message, db, args) => {
 
         // join the voice channel and dispatch the song
         const connection = await message.member.voice.channel.join();
-        const details = await ytdl.getBasicInfo(url);
+        const details = await ytdl.getInfo(url);
         const dispatcher = connection.play(ytdl(url, {filter: 'audioonly'}), {volume: 0.2});
 
         dispatcher.on('finish', () => {
