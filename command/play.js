@@ -2,11 +2,14 @@ const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
 const Music = require('./../class/Music');
 const Song = require('./../class/Song');
+const SongQueue = require('./../class/SongQueue');
+const { startsWith } = require('ffmpeg-static');
 let FieldValue = require('firebase-admin').firestore.FieldValue;
 
 module.exports.run = async (bot, message, db, args) => {
 
     const youtube = new YouTube(process.env.YT_API);
+    let serverQueue = bot.queue.get(message.guild.id);
 
     // no link or title
     if(!args){
@@ -21,7 +24,7 @@ module.exports.run = async (bot, message, db, args) => {
     let hasUrl = true;
 
     // join the title into a string
-    if (!args[0].startsWith("http")){
+    if (!args[0].startsWith("https")){
         title = args.join(' ');
         hasUrl = false;
     }
@@ -38,31 +41,71 @@ module.exports.run = async (bot, message, db, args) => {
         url = userLink;
     }
 
+    const details = await ytdl.getInfo(url);
+
+    let videoTitle = details.videoDetails.title;
+    let videoLength = details.videoDetails.lengthSeconds;
+    let videoURL = details.videoDetails.video_url;
+    
+    // Creating a Song object to with the video information
+    let song = new Song(videoTitle, videoLength, videoURL);
+    let music = new Music();
+
+    // formating the data for the database
+    let songData = song.databaseFormat();
+
+
+
     // Make sure the user is in a voice channel
     if (message.member.voice.channel){
 
+        if (!serverQueue) {
+            let songQueue = new SongQueue(message.channel,message.member.voice.channel,0.2);
+            bot.queue.set(message.guild.id, songQueue);
+            songQueue.addSong(songData);
+
+            try {
+                let connection = await message.member.voice.channel.join();
+                songQueue.connection = await connection;
+                player(songQueue.getFirst());
+            } catch (err) {
+                console.log(err);
+                bot.queue.delete(message.guild.id);
+                return;
+            }
+        } else {
+            serverQueue.addSong(songData);
+            console.log('song added to queue');
+        }
+
+        function player(song){
+            serverQueue = bot.queue.get(message.guild.id);
+
+            if (!song){
+                console.log('No songs to play.')
+                serverQueue.leaveVoiceChannel();
+                bot.queue.delete(message.guild.id);
+                return;
+            }
+
+            const dispatcher = serverQueue.getConnection().play(ytdl(song.video_url, {
+                quality: 'highestaudio',
+                highWaterMark: 1 << 25
+            }))
+                .on('finish', () => {
+                    serverQueue.removeFirst();
+                    player(serverQueue.getFirst());
+                })
+                .on('error', (err) => {
+                console.log(err);
+                })
+
+            dispatcher.setVolume(serverQueue.getVolume());
+            console.log(`[PLAYER]: ${song.video_title}`);
+        }
         // join the voice channel and dispatch the song
-        const connection = await message.member.voice.channel.join();
-        const details = await ytdl.getInfo(url);
-        const dispatcher = connection.play(ytdl(url, {filter: 'audioonly'}), {volume: 0.2});
 
-        dispatcher.on('finish', () => {
-            console.log('done playing');
-        })
-
-        // Getting the video information
-        let videoTitle = details.videoDetails.title;
-        let videoLength = details.videoDetails.lengthSeconds;
-        let videoURL = details.videoDetails.video_url;
-        
-        // Creating a Song object to with the video information
-        let song = new Song(videoTitle, videoLength, videoURL);
-        let music = new Music();
-        console.log(song.toString());
         let musicRef = db.collection(message.guild.id).doc('music');
-        
-        // formating the data for the database
-        let songData = song.databaseFormat();
 
         // Get the music document
         musicRef.get().then((res) => {
