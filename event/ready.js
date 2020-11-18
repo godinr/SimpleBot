@@ -8,6 +8,8 @@ module.exports = (bot) => {
         credential: admin.credential.cert(serviceAccount),
         databaseURL: process.env.DB_URL
       });
+    
+    bot.db = admin.firestore();
 
     console.log("Simple Bot is online!");
 

@@ -6,11 +6,10 @@ require('dotenv/config');
 // Configs
 const token = process.env.TOKEN;
 
-// Initialise bot
+// Initialise bot and properties
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 bot.queue = new Map();
-
 
 // Event handler
 fs.readdir('./event/', (err,files) => {

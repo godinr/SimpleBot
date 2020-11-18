@@ -1,23 +1,26 @@
-const admin = require('firebase-admin');
 
 module.exports = async (bot, message) => {
     if (message.author.bot) return;
-        
-    prefix = '.';
     if (message.channel.type === "dm") return;
 
+    // getting prefix from the db
+    const guildRef = bot.db.collection(message.guild.id).doc('prefix');
+    const document = await guildRef.get();
+    bot.prefix = await document.data().value;
+    
+    // parsing command from the message
     let msg_array = message.content.split(" ");
     let command = msg_array[0];
     let args = msg_array.slice(1);
+    let prefixLength = bot.prefix.length;
+    
     //Would write permissions here
-    if (!command.startsWith(prefix)) return;
-    console.log(command);
-
-    if (bot.commands.get(command.slice(prefix.length))){
-        let cmd = bot.commands.get(command.slice(prefix.length));
+    if (!command.startsWith(bot.prefix)) return;
+    
+    if (bot.commands.get(command.slice(prefixLength))){
+        let cmd = bot.commands.get(command.slice(prefixLength));
         if (cmd){
-            let db = admin.firestore();
-             cmd.run(bot, message, db, args)
+             cmd.run(bot, message, args)
                 .then(() => {
                     console.log(`[CMD] -> ${message.content}`);
                 }).catch((err) => {

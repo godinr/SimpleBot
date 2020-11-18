@@ -1,5 +1,5 @@
 
-module.exports.run = async (bot,message,args) => {
+module.exports.run = async (bot, message, args) => {
 
     let serverQueue = bot.queue(message.guild.id);
 

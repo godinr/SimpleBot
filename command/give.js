@@ -1,7 +1,7 @@
 let cleanID = require('../functions/cleanID');
 let FieldValue = require('firebase-admin').firestore.FieldValue;
 
-module.exports.run = async (bot, message, db, args) => {
+module.exports.run = async (bot, message, args) => {
     if (args.length != 2){
         message.channel.send('[Error using the command]\nExemple: .give @user 100');
         return;
@@ -17,7 +17,7 @@ module.exports.run = async (bot, message, db, args) => {
 
     userId = cleanID(userId);
     
-    let userRef = db.collection(message.guild.id).doc(userId);
+    let userRef = bot.db.collection(message.guild.id).doc(userId);
     let oldBalance = userRef.get()
                         .then((result) => {
                             if (result.exists){

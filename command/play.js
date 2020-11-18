@@ -3,12 +3,13 @@ const YouTube = require('simple-youtube-api');
 const Music = require('./../class/Music');
 const Song = require('./../class/Song');
 const SongQueue = require('./../class/SongQueue');
-const { startsWith } = require('ffmpeg-static');
 let FieldValue = require('firebase-admin').firestore.FieldValue;
 
-module.exports.run = async (bot, message, db, args) => {
-
+module.exports.run = async (bot, message, args) => {
+    // youtube api connection
     const youtube = new YouTube(process.env.YT_API);
+
+    // get the queue
     let serverQueue = bot.queue.get(message.guild.id);
 
     // no link or title
@@ -41,6 +42,7 @@ module.exports.run = async (bot, message, db, args) => {
         url = userLink;
     }
 
+    // get video details
     const details = await ytdl.getInfo(url);
 
     let videoTitle = details.videoDetails.title;
@@ -59,6 +61,7 @@ module.exports.run = async (bot, message, db, args) => {
     // Make sure the user is in a voice channel
     if (message.member.voice.channel){
 
+        // If we dont have a active queue, create one and join the voice channel
         if (!serverQueue) {
             let songQueue = new SongQueue(message.channel,message.member.voice.channel,0.2);
             bot.queue.set(message.guild.id, songQueue);
@@ -73,11 +76,16 @@ module.exports.run = async (bot, message, db, args) => {
                 bot.queue.delete(message.guild.id);
                 return;
             }
+        // with an active queue simply push the song into the songs array
         } else {
+            
             serverQueue.addSong(songData);
             console.log('song added to queue');
         }
 
+        /* Dispatche the song stream into the voice channel, recursive calls until 
+         * the song queue is empty or force stopped.
+         */
         function player(song){
             serverQueue = bot.queue.get(message.guild.id);
 
@@ -92,6 +100,7 @@ module.exports.run = async (bot, message, db, args) => {
                 quality: 'highestaudio',
                 highWaterMark: 1 << 25
             }))
+                // remove last played song and call player with the next one in queue.
                 .on('finish', () => {
                     serverQueue.removeFirst();
                     player(serverQueue.getFirst());
@@ -103,9 +112,9 @@ module.exports.run = async (bot, message, db, args) => {
             dispatcher.setVolume(serverQueue.getVolume());
             console.log(`[PLAYER]: ${song.video_title}`);
         }
-        // join the voice channel and dispatch the song
 
-        let musicRef = db.collection(message.guild.id).doc('music');
+        // database music document reference
+        let musicRef = bot.db.collection(message.guild.id).doc('music');
 
         // Get the music document
         musicRef.get().then((res) => {
