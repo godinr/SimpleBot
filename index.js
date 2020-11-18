@@ -23,24 +23,52 @@ fs.readdir('./event/', (err,files) => {
     });
 });
 
-// Command handler
-fs.readdir('./command', (err,files) => {
-    if (err) {
-        console.log(err);
-    }
+// Empty array for the commands
+let commandList = Array();
 
-    let cmdFiles = files.filter(f => f.split(".").pop() === "js");
+// check if we have a folder
+const isFolder = fileName => {
+    return fileName.indexOf('.') === -1;
+}
 
-    if (cmdFiles.length === 0){
-        console.log("No files found");
-        return;
-    }
+// check if we have a js file
+const isJsFile = fileName => {
+    return fileName.endsWith('.js');
+}
 
-    cmdFiles.forEach((f,i) => {
-        let props = require(`./command/${f}`);
-        console.log(`${i+1}: ${f} loaded`);
-        bot.commands.set(props.help.name, props);
-    });
+// files in the command directory
+const parent = fs.readdirSync('./command')
+    .map(fileName => {
+        return fileName
+    }).filter(isJsFile);
+
+// folders in the parent directory
+const folders = fs.readdirSync('./command')
+    .map(fileName => {
+        return fileName
+    }).filter(isFolder);
+
+commandList = parent;
+
+// check each folder and extract its js files
+folders.forEach(folder => {
+    const children = fs.readdirSync(`./command/${folder}`)
+        .map(fileName => {
+            return `/${folder}/${fileName}`;
+        }).filter(isJsFile);
+
+    commandList = commandList.concat(children);
+});
+
+if (commandList.length === 0){
+    console.log("No files found");
+    return;
+}
+
+commandList.forEach((f,i) => {
+    let props = require(`./command/${f}`);
+    console.log(`${i+1}: ${f} loaded`);
+    bot.commands.set(props.help.name, props);
 });
 
 bot.login(token);

@@ -1,8 +1,8 @@
 const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
-const Music = require('./../class/Music');
-const Song = require('./../class/Song');
-const SongQueue = require('./../class/SongQueue');
+const Music = require('../../class/Music');
+const Song = require('../../class/Song');
+const SongQueue = require('../../class/SongQueue');
 let FieldValue = require('firebase-admin').firestore.FieldValue;
 
 module.exports.run = async (bot, message, args) => {
@@ -110,6 +110,9 @@ module.exports.run = async (bot, message, args) => {
                 })
 
             dispatcher.setVolume(serverQueue.getVolume());
+            console.log(`VOLUME: ${dispatcher.volume}`);
+            console.log(`VOLUME DEC: ${dispatcher.volume.Decibels}`);
+            console.log(`VOLUME LOG: ${dispatcher.volumeLogarithmic}`);
             console.log(`[PLAYER]: ${song.video_title}`);
         }
 
