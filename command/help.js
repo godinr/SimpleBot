@@ -1,6 +1,4 @@
 const {MessageEmbed} = require('discord.js');
-const fs = require('fs');
-const message = require('../event/message');
 
 module.exports.run = async (bot,message) => {
     let commands = bot.commands.array();
