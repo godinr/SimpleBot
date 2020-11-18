@@ -3,6 +3,12 @@
 *Will update when members in my support server need an example of something else*
 * Currently it has the bot structure.
     * commands
-        * Very basic balance commands using firebase
-        * Very simple song storing using firebase
+        * Basic banking system using firebase
+            * Commands
+            * Signup, Send, Get, Transfer, View
+        * Music player with server based queue
+            * Commands
+            * Play, Stop, Skip, Volume
+            * It also saved the song to the database, unless
+                its already there.
 
