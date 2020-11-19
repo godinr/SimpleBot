@@ -51,5 +51,6 @@ module.exports.run = async (bot,message,args) => {
 }
 
 module.exports.help = {
-    name: "transfer"
+    name: "transfer",
+    type: "open"
 }

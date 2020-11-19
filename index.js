@@ -9,6 +9,7 @@ const token = process.env.TOKEN;
 // Initialise bot and properties
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
+bot.lockedCommands = new Discord.Collection();
 bot.queue = new Map();
 
 // Event handler
@@ -67,8 +68,8 @@ if (commandList.length === 0){
 
 commandList.forEach((f,i) => {
     let props = require(`./command/${f}`);
-    console.log(`${i+1}: ${f} loaded`);
     bot.commands.set(props.help.name, props);
+    console.log(`${i+1}: ${f} loaded`);
 });
 
 bot.login(token);

@@ -58,5 +58,6 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-    name: "send-funds"
+    name: "send-funds",
+    type: "open"
 }

@@ -36,5 +36,6 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-    name: "get-funds"
+    name: "get-funds",
+    type: "management"
 }

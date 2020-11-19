@@ -27,5 +27,6 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-    name: "prefix"
+    name: "prefix",
+    type: "management"
 }

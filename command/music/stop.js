@@ -20,5 +20,6 @@ module.exports.run = async (bot, message) => {
 
 
 module.exports.help = {
-    name: "stop"
+    name: "stop",
+    type: "open"
 }
