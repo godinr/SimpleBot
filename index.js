@@ -9,6 +9,7 @@ const token = process.env.TOKEN;
 // Initialise bot and properties
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
+bot.aliases = new Collection(); 
 bot.lockedCommands = new Discord.Collection();
 bot.queue = new Map();
 
