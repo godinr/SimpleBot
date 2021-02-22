@@ -14,6 +14,6 @@ Technologies: Nodejs, Firebase
 * * Simple Banking System (used for a tutorial) [+]
 * * Table generation (always generate perfect tables based on the size of the string per rows)
 
-![Table generation exemple](https://imgur.com/a/KDw5qvn)
+![Table generation exemple](https://i.imgur.com/3IVnvui.png)
 
 Whenever I have a little free time on my hands I will keep polishing and adding new features.
