@@ -1,5 +1,4 @@
 const axios = require('axios').default;
-let Stock = require('../class/Trading/Stock');
 
 module.exports = async function(symbol, region) {
 

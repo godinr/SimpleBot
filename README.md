@@ -8,7 +8,7 @@ Technologies: Nodejs, Firebase
 -  - [--] in developpemnt 
 -  - [+] done
 * Current features
-* * Simple Stock tradin simulation [--]
+* * Simple Stock trading simulation [--]
 * * Music Player [+]
 * * Moderation [--]
 * * Simple Banking System (used for a tutorial) [+]

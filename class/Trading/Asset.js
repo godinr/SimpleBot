@@ -17,6 +17,10 @@ class Asset {
         return this.shares;
     }
 
+    sellShares(qte){
+        this.shares -= qte;
+    }
+
     getBuyingPrice(){
         return this.buyingPrice;
     }
@@ -44,6 +48,13 @@ class Asset {
     exportObject(){
         return {
             'stock': this.stock.getSymbol(),
+            'shares': this.shares,
+            'buyingPrice': this.buyingPrice
+        }
+    }
+    exportObjectWithoutStock(){
+        return {
+            'stock': this.stock,
             'shares': this.shares,
             'buyingPrice': this.buyingPrice
         }
