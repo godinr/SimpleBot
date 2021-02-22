@@ -4,9 +4,9 @@ module.exports = async (bot, message) => {
     if (message.channel.type === "dm") return;
 
     // getting prefix from the db
-    const guildRef = bot.db.collection(message.guild.id).doc('prefix');
+    const guildRef = bot.db.collection(message.guild.id).doc('settings');
     const document = await guildRef.get();
-    bot.prefix = await document.data().value;
+    bot.prefix = await document.data().prefix;
     
     // parsing command from the message
     let msg_array = message.content.split(" ");

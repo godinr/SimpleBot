@@ -1,21 +1,26 @@
 class Music {
 
-    /**Music construction
-     * creates a field name list with an empty array
+    /**
+     * Music object
+     * @constructor
      */
     constructor(){
         this.list = Array();
     }
 
-    // make a copy of the list passed as paramater
+    /**
+     * copy a list of Song
+     * @param {[Song]} list 
+     */
     copyList(list){
         this.list = list;
     }
 
-    // Looks thru all the song listing stored into the list array
-    // the list array is just a clone of the data from the database
-    // if a song url is equal to the new url then return true and 
-    // the song will not be added
+    /**
+     * look thru list to see if the song url already exist
+     * @param {String} url 
+     * @returns {Boolean}
+     */
     lookup(url){
         for (let i = 0; i < this.list.length; i++){
             if (this.list[i].video_url == url){

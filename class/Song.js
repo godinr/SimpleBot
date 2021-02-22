@@ -1,9 +1,10 @@
 class Song {
 
-    /**Construct a song object
-     * title: video title
-     * time: video duration
-     * url: video url
+    /**
+     * @constructor create a song object
+     * @param {String} title
+     * @param {String} time
+     * @param {String} url
      */
     constructor(title, time, url){
         this.video_title = title;

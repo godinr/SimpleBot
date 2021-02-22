@@ -1,13 +1,19 @@
-## SimpleBot
-*This is just a exemple bot that I use to explain simple functions.*
-*Will update when members in my support server need an example of something else*
-* Current State
-    * Basic banking system using firebase
-        * Commands
-        	* Signup, Send, Get, Transfer, View
-    * Music player with server based queue
-        * Commands
-    	    * Play, Stop, Skip, Volume
-        * It also saved the song to the database, unless
-          its already there.
+## SimpleBot (Will rename it eventualy)
+------------
+This is just a personal project to test certain features, and make fun commands.
+I will keep all the code public if ever someone could find some of it helpfull.
 
+Technologies: Nodejs, Firebase
+- legend : 
+-  - [--] in developpemnt 
+-  - [+] done
+* Current features
+* * Simple Stock tradin simulation [--]
+* * Music Player [+]
+* * Moderation [--]
+* * Simple Banking System (used for a tutorial) [+]
+* * Table generation (always generate perfect tables based on the size of the string per rows)
+
+![Table generation exemple](https://imgur.com/a/KDw5qvn)
+
+Whenever I have a little free time on my hands I will keep polishing and adding new features.

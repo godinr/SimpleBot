@@ -1,0 +1,20 @@
+moderation commands
+    -> mute
+    -> unmute
+    -> ban
+    -> unban
+    -> give_role
+
+api
+    more stocks options,
+    add crypto
+    more api stuff
+
+
+experimetal
+    -> role reaction
+
+Log
+    -> mute, unmute
+    -> promote, demote
+    
